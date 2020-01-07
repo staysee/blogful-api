@@ -1,7 +1,7 @@
 const {expect} = require('chai')
 const knex = require('knex')
 const app = require('../src/app')
-const { makeArticlesArray } = require('./articles.fixtures')
+const { makeArticlesArray, makeMaliciousArticle } = require('./articles.fixtures')
 
 describe(`Articles Endpoint`, function() {
     let db 
@@ -44,9 +44,29 @@ describe(`Articles Endpoint`, function() {
                     .expect(200, testArticles)
             })
         })
+
+        context(`Given an XSS attack article`, () => {
+            const { maliciousArticle, expectedArticle } = makeMaliciousArticle()
+
+            beforeEach(`insert malicious article`, () => {
+                return db
+                    .into('blogful_articles')
+                    .insert([maliciousArticle])
+            })
+
+            it(`removes XSS attack content`, () => {
+                return supertest(app)
+                    .get(`/articles`)
+                    .expect(200)
+                    .expect(res => {
+                        expect(res.body.title).to.eql(expectedArticle.title)
+                        expect(res.body.content).to.eql(expectedArticle.content)
+                    })
+            })
+        })
     })
 
-    describe(`GET /article/:article_id`, () => {
+    describe.only(`GET /article/:article_id`, () => {
         context(`Given there are no articles`, () => {
             it(`responds with 404`, () => {
                 const articleId = 123456
@@ -71,6 +91,26 @@ describe(`Articles Endpoint`, function() {
                 return supertest(app)
                     .get(`/articles/${articleId}`)
                     .expect(200, expectedArticle)
+            })
+        })
+
+        context(`Given an XSS attack article`, () => {
+            const { maliciousArticle, expectedArticle } = makeMaliciousArticle()
+
+            beforeEach(`insert malicious article`, () => {
+                return db
+                    .into('blogful_articles')
+                    .insert([maliciousArticle])
+            })
+
+            it(`removes XSS attack content`, () => {
+                return supertest(app)
+                    .get(`/articles/${maliciousArticle.id}`)
+                    .expect(200)
+                    .expect(res => {
+                        expect(res.body.title).to.eql(expectedArticle.title)
+                        expect(res.body.content).to.eql(expectedArticle.content)
+                    })
             })
         })
     })
@@ -123,6 +163,17 @@ describe(`Articles Endpoint`, function() {
                         error: { message: `Missing '${field}' in request body`}
                     })
             })
+        })
+
+        it(`removes XSS attack content from response`, () => {
+            return supertest(app)
+                .post(`/articles`)
+                .send(maliciousArticle)
+                .expect(201)
+                .expect(res => {
+                    expect(res.body.title).to.eql(expectedArticle.title)
+                    expect(res.body.content).to.eql(expectedArticle.content)
+                })
         })
     })
 })
