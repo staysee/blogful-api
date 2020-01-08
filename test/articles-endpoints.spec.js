@@ -66,7 +66,7 @@ describe(`Articles Endpoint`, function() {
         })
     })
 
-    describe.only(`GET /article/:article_id`, () => {
+    describe(`GET /article/:article_id`, () => {
         context(`Given there are no articles`, () => {
             it(`responds with 404`, () => {
                 const articleId = 123456
@@ -115,7 +115,7 @@ describe(`Articles Endpoint`, function() {
         })
     })
 
-    describe.only(`POST /articles`, () => {
+    describe(`POST /articles`, () => {
         it(`creates an article, responding with 201 and the new article`, () => {
             this.retries(3)
             const newArticle = {
@@ -166,6 +166,7 @@ describe(`Articles Endpoint`, function() {
         })
 
         it(`removes XSS attack content from response`, () => {
+            const { maliciousArticle, expectedArticle } = makeMaliciousArticle()
             return supertest(app)
                 .post(`/articles`)
                 .send(maliciousArticle)
