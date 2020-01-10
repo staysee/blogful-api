@@ -59,8 +59,8 @@ describe(`Articles Endpoint`, function() {
                     .get(`/articles`)
                     .expect(200)
                     .expect(res => {
-                        expect(res.body.title).to.eql(expectedArticle.title)
-                        expect(res.body.content).to.eql(expectedArticle.content)
+                        expect(res.body[0].title).to.eql(expectedArticle.title)
+                        expect(res.body[0].content).to.eql(expectedArticle.content)
                     })
             })
         })
@@ -178,7 +178,16 @@ describe(`Articles Endpoint`, function() {
         })
     })
 
-    describe.only(`DELETE /articles/:article_id`, () => {
+    describe(`DELETE /articles/:article_id`, () => {
+        context(`Given no article`, () => {
+            it(`responds with 404`, () => {
+                const articleId = 123456
+                return supertest(app)
+                    .delete(`/articles/${articleId}`)
+                    .expect(404, { error: { message: `Article doesn't exist` } })
+            })
+        })
+
         context(`Given there are articles in the database`, () => {
             const testArticles = makeArticlesArray()
 

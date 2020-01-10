@@ -47,7 +47,7 @@ articlesRouter
 
 articlesRouter
     .route('/:article_id')
-    .get((req, res, next) => {
+    .all((req, res, next) => {
         const knexInstance = req.app.get('db')
         ArticlesService.getById(knexInstance, req.params.article_id)
             .then(article => {
@@ -56,7 +56,19 @@ articlesRouter
                         error: { message: `Article doesn't exist` }
                     })
                 }
-                res.json(serializeArticle(article))
+                res.article = article //save the article for the next middlware
+                next() //don't forget to call next so the next middleware happens
+            })
+            .catch(next)
+        })
+    .get((req, res, next) => {
+        res.json(serializeArticle(res.article))
+    })
+    .delete((req, res, next) => {
+        const knexInstance = req.app.get('db')
+        ArticlesService.deleteArticle(knexInstance, req.params.article_id)
+            .then( () => {
+                res.status(204).end()
             })
             .catch(next)
     })
