@@ -260,7 +260,7 @@ describe(`Articles Endpoint`, function() {
                     .send({ irrelevantField: 'foo' })
                     .expect(400, {
                         error: {
-                            message: `Request body must contain either 'title', 'style', or 'content'`
+                            message: `Request body must content either 'title', 'style' or 'content'`
                         }
                     })
             })
@@ -279,7 +279,7 @@ describe(`Articles Endpoint`, function() {
                     .patch(`/api/articles/${idToUpdate}`)
                     .send({
                         ...updateArticle,
-                        fieldToIgnore: 'shoudl not be in GET response'
+                        fieldToIgnore: 'should not be in GET response'
                     })
                     .expect(204)
                     .then(res =>
