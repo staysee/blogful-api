@@ -89,7 +89,7 @@ usersRouter
         
         const knexInstance = req.app.get('db')
         UsersService.updateUser(knexInstance, req.params.user_id, userToUpdate)
-            .then(numRowsAffected -> {
+            .then(numRowsAffected => {
                 res.status(204).end()
             })
             .catch(next)
