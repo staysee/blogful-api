@@ -24,7 +24,7 @@ const CommentsService = {
             .delete()
     },
     updateComment(knex, id, newCommentFields){
-        return knex('blogful_commenst')
+        return knex('blogful_comments')
             .where({ id })
             .update(newCommentFields)
     }

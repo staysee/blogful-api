@@ -67,7 +67,7 @@ commentsRouter
         res.json(serializeComment(res.comment))
     })
     .delete((req, res, next) => {
-        const knexInstance = req.get.app('db')
+        const knexInstance = req.app.get('db')
         CommentsService.deleteComment(knexInstance, req.params.comment_id)
             .then(numRowsAffected => {
                 res.status(204).end()
