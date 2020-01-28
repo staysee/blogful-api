@@ -3,7 +3,6 @@ const knex = require('knex')
 const app = require('../src/app')
 const { makeArticlesArray, makeMaliciousArticle } = require('./articles.fixtures')
 const { makeUsersArray } = require('./users.fixtures')
-
 describe(`Articles Endpoint`, function() {
     let db 
 
@@ -17,7 +16,7 @@ describe(`Articles Endpoint`, function() {
 
     after(`disconnect from db`, () => db.destroy())
 
-    before(`clean the table`, () => db.raw('TRUNCATE blogful_articles, blogful_users, blogful_comments RESTART IDENTITY CASCADE'))
+    before('clean the table', () => db.raw('TRUNCATE blogful_articles, blogful_users, blogful_comments RESTART IDENTITY CASCADE'))
 
     afterEach('cleanup',() => db.raw('TRUNCATE blogful_articles, blogful_users, blogful_comments RESTART IDENTITY CASCADE'))
 
@@ -36,7 +35,7 @@ describe(`Articles Endpoint`, function() {
     
             beforeEach(`insert articles`, () => {
                 return db
-                    .into('blogful_articles')
+                    .into('blogful_users')
                     .insert(testUsers)
                     .then(() => {
                         return db
@@ -57,8 +56,8 @@ describe(`Articles Endpoint`, function() {
             const { maliciousArticle, expectedArticle } = makeMaliciousArticle()
 
             beforeEach(`insert malicious article`, () => {
-                return db
-                    .into('blogful_articles')
+                return db 
+                    .into('blogful_users')
                     .insert(testUsers)
                     .then(() => {
                         return db
@@ -94,8 +93,8 @@ describe(`Articles Endpoint`, function() {
             const testArticles = makeArticlesArray()
     
             beforeEach(`insert articles`, () => {
-                return db
-                    into('blogful_users')
+                return db 
+                    .into('blogful_users')
                     .insert(testUsers)
                     .then(() => {
                         return db
@@ -143,11 +142,10 @@ describe(`Articles Endpoint`, function() {
     describe(`POST /api/articles`, () => {
         const testUsers = makeUsersArray()
         beforeEach('insert malicious article', () => {
-            return db 
+            return db
                 .into('blogful_users')
                 .insert(testUsers)
         })
-
         it(`creates an article, responding with 201 and the new article`, () => {
             this.retries(3)
             const newArticle = {
