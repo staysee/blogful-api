@@ -5,12 +5,12 @@
 1. Start the application `npm start`
 2. Start nodemon for the application `npm run dev`
 3. Run the tests in watch mode `npm test`
-4. Migrate the database at `DB_URL`, with `npm run migrate:test`
-5. Migrate the tests (at `TEST_DB_URL`), with `npm run migrate:test`
+4. Migrate the database at `DATABASE_URL`, with `npm run migrate:test`
+5. Migrate the tests (at `TEST_DATABASE_URL`), with `npm run migrate:test`
 
 ## Env setup
 
-Remember to create a .env file with `DB_URL` and `TEST_DB_URL`.
+Remember to create a .env file with `DATABASE_URL` and `TEST_DATABASE_URL`.
 
 ## Deploying
 
